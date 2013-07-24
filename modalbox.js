@@ -440,9 +440,17 @@ Modalbox.Methods = {
 			if (this.focusableElements.length) {
 				var firstEl = this.focusableElements.find(function (el){
 					return el.tabIndex == 1;
-				}) || this.focusableElements.first();
-				this.currFocused = this.focusableElements.toArray().indexOf(firstEl);
-				firstEl.focus(); // Focus on first focusable element except close button
+				});
+				if (!firstEl) {
+					firstEl = this.focusableElements.find(function(el){
+						// Error JS for IE7 without try/catch
+						try { el.focus(); return true; } catch(e) { return false; }
+					});
+		        	}
+		        	if (firstEl) {
+					this.currFocused = this.focusableElements.toArray().indexOf(firstEl);
+					firstEl.focus(); // Focus on first focusable element except close button
+		        	}
 			} else if (this.MBclose.visible()) {
 				this.MBclose.focus(); // If no focusable elements exist focus on close button
 			}
